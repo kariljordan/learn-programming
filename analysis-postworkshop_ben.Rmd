@@ -26,8 +26,7 @@ A [PDF](https://github.com/kariljordan/carpentry-community-assessment-projects/b
 Community members were invited to contribute code to this analysis. Feel free to use the data and [tell us](mailto: kariljordan@carpentries.org) about your findings.
 
 ```{r include=FALSE}
-library(readr)
-data <- read.csv("https://raw.githubusercontent.com/kariljordan/carpentry-community-assessment-projects/master/software-carpentry-projects/public_swc_postworkshop_data_archivedJune2017.csv", na.strings = "")
+data <- readr::read_csv("https://raw.githubusercontent.com/kariljordan/carpentry-community-assessment-projects/master/software-carpentry-projects/public_swc_postworkshop_data_archivedJune2017.csv")
 ```
 ### Respondent Demographics
 A host of initiatives have been developed and implemented globally to address gender disparities in computing. Software Carpentry's volunteer instructors have hosted hundreds of workshops since 1998, and the post-workshop survey data shows __parity__ in attendance of males compared to females.
@@ -37,11 +36,11 @@ A host of initiatives have been developed and implemented globally to address ge
 gender = c("Female", "Male", "Other", "Prefer not to say")
 gender = factor (gender)
 
-data$Gender = factor(data$Gender, levels = gender)
+data$`Gender` = factor(data$`Gender`, levels = gender)
 
-Gender <- round(prop.table(table(data$Gender)) * 100)
+Gender <- round(prop.table(table(data$`Gender`)) * 100)
 
-kable(Gender, format = "markdown", row.names = FALSE, col.names = c("Gender", "%"))
+kable(Gender, format = "markdown")#, row.names = FALSE, col.names = c("Gender", "%"))
 
 ######################## BM ############################
 # Yes! Since we do this operation often in this document,
