@@ -40,7 +40,7 @@ data$`Gender` = factor(data$`Gender`, levels = gender)
 
 Gender <- round(prop.table(table(data$`Gender`)) * 100)
 
-kable(Gender, format = "markdown")#, row.names = FALSE, col.names = c("Gender", "%"))
+kable(Gender, format = "markdown", row.names = FALSE, col.names = c("Gender", "%"))
 
 ######################## BM ############################
 # Yes! Since we do this operation often in this document,
@@ -64,16 +64,14 @@ data %>%
   tally_and_perc(Gender, na.rm = TRUE)
 
 data %>% 
-  tally_and_perc(Gender, na.rm = FALSE)
+  tally_and_perc(Gender, na.rm = TRUE)
 
 data %>% 
   tally_and_perc(Gender) %>%  # our custom function!
   mutate(Gender = if_else(is.na(Gender), 
-                          "No reponse", 
+                          "No response", 
                           Gender)) %>% # deal with NAs
   kable()
-
-
 ```
 
 A breakdown of Software Carpentry's learners by __status__ is provided below.
@@ -106,10 +104,10 @@ ggplot(data_status_tally,
 
 ######################## BM ############################
 # I can see why you want to order the status values here,
-# but lets put it in a new col so we stil have the orignal values
+# but lets put it in a new col so we still have the original values
 # available. 
 #
-# Also, let's use the forcats pkg to to handle factors because it works
+# Also, let's use the forcats pkg to handle factors because it works
 # well with dplyr
 #
 # I recommend indenting your code more, especially with the ggplot chunk,
@@ -223,7 +221,7 @@ data$Pace = factor (data$Pace, levels = pace)
 
 Pace <- round(prop.table(table(data$Pace)) * 100)
 
-kable(Pace, format = "markdown", row.names = FALSE, col.names = c("Workshop Pace", "%"))
+kable(Pace, format = "markdown", row.names = FALSE, col.names = c("Pace", "%"))
 
 ######################## BM ############################
 # By coincidence, the alphabetical order is the same as your desired order
@@ -269,8 +267,6 @@ balanced <-
   balance_tally %>% 
   filter(balance_ordered == "Balanced (lecture/hands-on)") %>% 
   pull(`%`)
-
-
 ```
 
 `r balanced`% of respondents felt the workshop they attended was well balanaced between lecture and hands-on learning.
@@ -525,16 +521,16 @@ Firstly, a breakdown of how much of the information presented was new to the res
 new_information = c("None of it", "Some of it", "About half of it", "Most of it", "All of it")
 new_information = factor(new_information)
 
-data$New.Information = factor(data$New.Information, levels = new_information)
+data$`New-Information` = factor(data$`New-Information`, levels = new_information)
 
 data_new_information_tally <- 
   data %>% 
-  group_by(New.Information) %>% 
+  group_by(`New-Information`) %>% 
   tally() %>% 
-  filter(!is.na(New.Information))  
+  filter(!is.na(`New-Information`))  
 
 ggplot(data_new_information_tally, 
-       aes(New.Information, y = 100 * (n/sum(n)),
+       aes(`New-Information`, y = 100 * (n/sum(n)),
            n)) +
   geom_bar(stat = "identity", fill="salmon1") +
   geom_text(aes(label=n), size= 4) +
@@ -749,18 +745,21 @@ likert_cols_intim %>%
 # How do I change the y axis labels?
 # Is there a better way to show this information?
 # Are we sure this plot is correct?
-cols_with_Increase <- map_lgl(data, ~`%in%`("No increase in my knowledge", .x))
-data_increase <-  data[ , cols_with_Increase]
+# cols_with_Increase <- map_lgl(data, ~`%in%`("No increase in my knowledge", .x))
+# data_increase <-  data[ , cols_with_Increase]
 
-order = c("Never", "Rarely", "Sometimes", "Often", "All of the time")
+#order = c("No increase in my knowledge",                
+#   "Knowledge increased a little",               
+#   "Knowledge increased slightly",               
+#   "Knowledge increased a great deal")
 
-data_increase <- map_if(data_increase, 
-                      is.character, 
-                      as.factor)
+#data_increase <- map_if(data_increase, 
+#                      is.character, 
+#                      as.factor)
 
-title <- "Self-Reported Knowledge Increase Post-Workshop"
-data_increase_likert <-  likert(as.data.frame(data_increase))
-plot(data_increase_likert) + ggtitle(title)
+#title <- "Self-Reported Knowledge Increase Post-Workshop"
+#data_increase_likert <-  likert(as.data.frame(data_increase))
+#plot(data_increase_likert) + ggtitle(title)
 
 ######################## BM ############################
 # I adapt my code from a previous chunk
@@ -835,42 +834,42 @@ knowledge_pre = c("Little or no knowledge of the topic", "Some knowledge of the 
 # knowledge_post = c("No increase in my knowledge", "Knowledge increased slightly", # "Knowledge increased a little", "Knowledge increased a great deal", "N/A - Not 
 # covered at this workshop")
 
-data$`Unix.Shell.Pre` <- 
-  factor(data$`Unix.Shell.Pre``, 
-         levels = knowledge_pre)
+#data$`Unix-Shell-Pre` <- 
+#  factor(data$`Unix-Shell-Pre``, 
+#         levels = knowledge_pre)
 
-pre_and_post_knowledge <- 
-data %>%
-  select(`Unix.Shell.Pre`, 
-          `Unix.Shell.Knowledge.Increase`) %>%
-  gather() %>%
-  group_by(key, value) %>%
-  tally() %>%
-  mutate( perc = 100 * (n/sum(n))) %>%
-  filter(!is.na(key),
-         !is.na(value)) 
+#pre_and_post_knowledge <- 
+#data %>%
+#  select(`Unix-Shell-Pre`, 
+#          `Unix-Shell-Knowledge-Increase`) %>%
+#  gather() %>%
+#  group_by(key, value) %>%
+#  tally() %>%
+#  mutate( perc = 100 * (n/sum(n))) %>%
+#  filter(!is.na(key),
+#         !is.na(value)) 
 
-  ggplot(pre_and_post_knowledge, 
-         aes(x = factor(value, 
-                        levels = programming), 
-             y = perc, 
-             fill = key)) +
-    geom_bar(stat = "identity", 
-             position = "dodge") +
-    geom_text(aes(label=n), size= 4) +
-    scale_x_discrete(labels = function(x) lapply(strwrap(x,
-                                                         width = 10,
-                                                         simplify = FALSE),
-                                                 paste,
-                                                 collapse = "\n")) +
-    theme_classic() +
-    xlab("Programming Usage") +
-    ylab("% Respondents") +
-    scale_fill_discrete(name = "",
-                        labels = c("Before Workshop", "After Workshop")) +
-    ggtitle("Respondents' Programming Knowledge Increased") +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    theme_classic(base_size = 14)
+#  ggplot(pre_and_post_knowledge, 
+#         aes(x = factor(value, 
+#                        levels = programming), 
+#             y = perc, 
+#             fill = key)) +
+#    geom_bar(stat = "identity", 
+#             position = "dodge") +
+#    geom_text(aes(label=n), size= 4) +
+#    scale_x_discrete(labels = function(x) lapply(strwrap(x,
+#                                                         width = 10,
+#                                                         simplify = FALSE),
+#                                                 paste,
+#                                                 collapse = "\n")) +
+#    theme_classic() +
+#    xlab("Programming Usage") +
+#    ylab("% Respondents") +
+#    scale_fill_discrete(name = "",
+#                        labels = c("Before Workshop", "After Workshop")) +
+#    ggtitle("Respondents' Programming Knowledge Increased") +
+#    theme(plot.title = element_text(hjust = 0.5)) +
+#    theme_classic(base_size = 14)
   
 ######################## BM ############################
 # because the pre- and post- column are quite different, we
@@ -989,16 +988,16 @@ grid.arrange(tools_before,
 motivation = c("Less motivated", "Slightly less motivated", "No changes in motivation", "More motivated", "Much more motivated", "N/A - Topic not covered")
 motivation = factor(motivation)
 
-data$After.Unix.Shell.Motivation = factor(data$After.Unix.Shell.Motivation, levels = motivation)
+data$`After-Unix-Shell-Motivation` = factor(data$`After-Unix-Shell-Motivation`, levels = motivation)
 
 data_motivation_tally <- 
   data %>% 
-  group_by(After.Unix.Shell.Motivation) %>% 
+  group_by(`After-Unix-Shell-Motivation`) %>% 
   tally() %>% 
-  filter(!is.na(After.Unix.Shell.Motivation)) 
+  filter(!is.na(`After-Unix-Shell-Motivation`)) 
 
 ggplot(data_motivation_tally, 
-         aes(After.Unix.Shell.Motivation, y = 100 * (n/sum(n)),
+         aes(`After-Unix-Shell-Motivation`, y = 100 * (n/sum(n)),
            n)) +
     geom_bar(stat = "identity", 
              position = "dodge", fill = "orange") +
