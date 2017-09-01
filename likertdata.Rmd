@@ -1,0 +1,209 @@
+```{r echo = F}
+library(knitr)
+library(likert)
+library(plyr)
+#likert_data_all <- read.csv("~/Users/kariljordan/Data_Carpentry/learn-programming/likert_data.csv", row.names=1)
+
+likert_data_all <- read.csv("~/Users/kariljordan/Data_Carpentry/learn-programming/likert_data_uiuc_sorted.csv")
+
+likert_data = likert_data_all[, 2:length(likert_data_all)]
+likert_data = likert_data[,1:length(likert_data) -1]
+likert_data = likert_data[,order(names(likert_data))]
+ StuLevel <- read.table("~/Documents/merindadata/StuLevel.csv", header=TRUE, row.names=NULL, quote="\"")
+ 
+ 
+group1 = likert_data[,1:5]
+group2 = likert_data[,6:10]
+group3 = likert_data[,11:16]
+
+group1order = c("Peer Review Process", "Author & Publisher Rights", "Publication & Access Models", "Impact of Research", "Data Management")
+
+names = c(colnames(group1)[1])
+
+group1items = rename(data.frame(group1), c( Q01 = "1a: Peer Review Process", Q02 = "1b: Author & Publisher Rights", Q03 = "1c: Publication & Access Models", Q04 = "1d: Impact of Research", Q05 = "1e: Data Management"))
+group2items = rename(data.frame(group2), c( Q06 = "2a: Peer Review Process", Q07 = "2b: Author & Publisher Rights", Q08 = "2c: Publication & Access Models", Q09 = "2d: Impact of Research", Q10 = "2e: Data Management"))
+group3items = rename(data.frame(group3), c( Q21 = "5a: Describe scholarly communication cycle", Q22 = "5b: Participate in peer review process", Q23 = "5c: Advise peer on author’s rights", Q24 = "5d: Define Open Access", Q25 = "5e: Determine impact of your research", Q26 = "5f: Manage your research data"))
+
+mylevels <- c('1', '2', '3', '4', '5')
+
+items = group1items
+for(i in seq_along(items)) {
+	items[,i] <- factor(items[,i], levels=mylevels)
+}
+
+g1lik = likert(items)
+g1lik_school = likert(items, grouping = likert_data_all$school)
+
+
+items = group2items
+for(i in seq_along(items)) {
+	items[,i] <- factor(items[,i], levels=mylevels)
+}
+
+g2lik = likert(items)
+g2lik_school = likert(items, grouping = likert_data_all$school)
+
+items = group3items
+for(i in seq_along(items)) {
+	items[,i] <- factor(items[,i], levels=mylevels)
+}
+
+g3lik = likert(items)
+g3lik_school = likert(items, grouping = likert_data_all$school)
+
+#g1lik = likert(group1items)
+#g2lik = likert(group2items)
+#g3lik = likert(group3items)
+
+
+```
+
+
+# Question 1
+```{r}
+plot(g1lik, group.order = c("1a: Peer Review Process", "1b: Author & Publisher Rights", "1c: Publication & Access Models", "1d: Impact of Research","1e: Data Management"), low.color='#7a7a7a', high.color='#7a7a7a') + labs(y = "Percentage of respondents on a 5-point Likert scale") #WTF WHY IS THIS YLAB
+
+plot(g1lik_school, low.color='#7a7a7a', high.color='#7a7a7a') + labs(y = "Percentage of respondents on a 5-point Likert scale") #WTF WHY IS THIS YLAB
+```
+
+# Question 2
+```{r}
+plot(g2lik, group.order = c("2a: Peer Review Process", "2b: Author & Publisher Rights", "2c: Publication & Access Models", "2d: Impact of Research","2e: Data Management"), low.color='#7a7a7a', high.color='#7a7a7a') + labs(y = "Percentage of respondents on a 5-point Likert scale") #WTF WHY IS THIS YLAB
+plot(g2lik_school, low.color='#7a7a7a', high.color='#7a7a7a') + labs(y = "Percentage of respondents on a 5-point Likert scale") #WTF WHY IS THIS YLAB
+```
+
+
+# Question 5
+```{r}
+plot(g3lik, group.order = c("5a: Describe scholarly communication cycle", "5b: Participate in peer review process", "5c: Advise peer on author’s rights", "5d: Define Open Access","5e: Determine impact of your research", "5f: Manage your research data"), low.color='#7a7a7a', high.color='#7a7a7a') + labs(y = "Percentage of respondents on a 5-point Likert scale") #WTF WHY IS THIS YLAB
+
+plot(g3lik_school, low.color='#7a7a7a', high.color='#7a7a7a') + labs(y = "Percentage of respondents on a 5-point Likert scale") #WTF WHY IS THIS YLAB
+
+```
+
+Means:
+```{r echo = F}
+means = round(sapply(likert_data, mean, na.rm = TRUE), 2)
+kable(t(as.matrix(means)), format = "markdown")
+```
+
+Medians:
+
+```{r echo = F}
+meds = sapply(likert_data, median, na.rm = TRUE)
+kable(t(as.matrix(meds)), format = "markdown")
+```
+
+
+Standard deviations:
+```{r echo = F}
+
+sds = round(sapply(likert_data, sd, na.rm = TRUE), 2)
+kable(t(as.matrix(sds)), format = "markdown")
+```
+
+Variances:
+```{r echo= F}
+#vars = round(sapply(likert_data, var, na.rm = TRUE), 2)
+#kable(t(as.matrix(vars)), format = "markdown")
+```
+
+Likert plots
+```{r echo = F}
+#http://jason.bryer.org/likert/
+#likert_data_all = sapply(likert_data_all, as.factor)
+
+#stus = sapply(StuLevel, as.factor)
+```
+
+
+kable(summary(lik), format = "markdown")
+#```{r}
+likert_data = sapply(likert_data, as.factor)
+
+lik = likert(data.frame(likert_data))
+
+
+group1 = sapply(group1, as.factor)
+group2 = sapply(group2, as.factor)
+group3 = sapply(group3, as.factor)
+
+group1_names = group1
+group2_names = group1
+group3_names = group1
+
+group1order = c("Peer Review Process", "Author & Publisher Rights", "Publication & Access Models", "Impact of Research", "Data Management")
+
+colnames(group1_names) = group1order
+
+
+group1_lik = likert(data.frame(group1))
+group2_lik = likert(data.frame(group2))
+group3_lik = likert(data.frame(group3))
+
+group1_lik_names = likert(data.frame(group1_names))
+
+
+
+#plot(lik)
+#plot(lik,  centered = FALSE, wrap = 30)
+
+plot(group1_lik, group.order = c('Q01', 'Q02', 'Q03', 'Q04', 'Q05'), low.color='#7a7a7a', high.color='#7a7a7a')
+#plot(group1_lik,  centered = FALSE, wrap = 30)
+
+plot(group1_lik_names, group.order = group1order, low.color='#7a7a7a', high.color='#7a7a7a')
+
+plot(group2_lik, group.order = c('Q06', 'Q07', 'Q08', 'Q09', 'Q10'), low.color='#7a7a7a', high.color='#7a7a7a')
+#plot(group2_lik,  centered = FALSE, wrap = 30)
+
+plot(group3_lik, group.order = c('Q21', 'Q22', 'Q23', 'Q24', 'Q25', 'Q26'), low.color='#7a7a7a', high.color='#7a7a7a')
+#plot(group3_lik,  centered = FALSE, wrap = 30)
+
+#plot(lik,  type = "heat")
+
+#plot(lik, type = "histogram")
+
+```
+
+#```{r echo = F}
+
+# groups
+
+mylevels <- c('1', '2', '3', '4', '5')
+
+group1_grouped = likert_data_all[, c('Q01', 'Q02', 'Q03', 'Q04', 'Q05')]
+group2_grouped = likert_data_all[, c('Q06', 'Q07', 'Q08', 'Q09', 'Q10')]
+group3_grouped = likert_data_all[, c('Q21', 'Q22', 'Q23', 'Q24', 'Q25', 'Q26')]
+
+items = group1_grouped
+for(i in seq_along(items)) {
+	items[,i] <- factor(items[,i], levels=mylevels)
+}
+lgood <- likert(items, grouping = likert_data_all$school)
+
+plot(lgood, low.color='#7a7a7a', high.color='#7a7a7a')
+
+items = group2_grouped
+for(i in seq_along(items)) {
+	items[,i] <- factor(items[,i], levels=mylevels)
+}
+lgood <- likert(items, grouping = likert_data_all$school)
+
+plot(lgood, low.color='#7a7a7a', high.color='#7a7a7a')
+
+items = group3_grouped
+for(i in seq_along(items)) {
+	items[,i] <- factor(items[,i], levels=mylevels)
+}
+lgood <- likert(items, grouping = likert_data_all$school)
+
+plot(lgood, low.color='#7a7a7a', high.color='#7a7a7a')
+
+
+
+
+#####
+
+# https://github.com/jbryer/likert/blob/master/demo/UnusedLevels.R
+```
+
