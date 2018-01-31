@@ -1,0 +1,108 @@
+Last login: Wed Dec 13 07:30:33 on console
+Karis-MacBook-Pro:~ kariljordan$ pip
+
+Usage:   
+  pip <command> [options]
+
+Commands:
+  install                     Install packages.
+  download                    Download packages.
+  uninstall                   Uninstall packages.
+  freeze                      Output installed packages in requirements format.
+  list                        List installed packages.
+  show                        Show information about installed packages.
+  check                       Verify installed packages have compatible dependencies.
+  search                      Search PyPI for packages.
+  wheel                       Build wheels from your requirements.
+  hash                        Compute hashes of package archives.
+  completion                  A helper command used for command completion.
+  help                        Show help for commands.
+
+General Options:
+  -h, --help                  Show help.
+  --isolated                  Run pip in an isolated mode, ignoring environment variables and user configuration.
+  -v, --verbose               Give more output. Option is additive, and can be used up to 3 times.
+  -V, --version               Show version and exit.
+  -q, --quiet                 Give less output. Option is additive, and can be used up to 3 times (corresponding to WARNING, ERROR, and CRITICAL logging levels).
+  --log <path>                Path to a verbose appending log.
+  --proxy <proxy>             Specify a proxy in the form [user:passwd@]proxy.server:port.
+  --retries <retries>         Maximum number of retries each connection should attempt (default 5 times).
+  --timeout <sec>             Set the socket timeout (default 15 seconds).
+  --exists-action <action>    Default action when a path already exists: (s)witch, (i)gnore, (w)ipe, (b)ackup, (a)bort.
+  --trusted-host <hostname>   Mark this host as trusted, even though it does not have valid or any HTTPS.
+  --cert <path>               Path to alternate CA bundle.
+  --client-cert <path>        Path to SSL client certificate, a single file containing the private key and the certificate in PEM format.
+  --cache-dir <dir>           Store the cache data in <dir>.
+  --no-cache-dir              Disable the cache.
+  --disable-pip-version-check
+                              Don't periodically check PyPI to determine whether a new version of pip is available for download. Implied with --no-index.
+Karis-MacBook-Pro:~ kariljordan$ pip install
+You must give at least one requirement to install (see "pip help install")
+Karis-MacBook-Pro:~ kariljordan$ pip install jinja2-cli
+Collecting jinja2-cli
+  Downloading jinja2_cli-0.6.0-py2.py3-none-any.whl
+Requirement already satisfied: jinja2 in /Applications/anaconda3/lib/python3.6/site-packages (from jinja2-cli)
+Requirement already satisfied: MarkupSafe>=0.23 in /Applications/anaconda3/lib/python3.6/site-packages (from jinja2->jinja2-cli)
+Installing collected packages: jinja2-cli
+Successfully installed jinja2-cli-0.6.0
+Karis-MacBook-Pro:~ kariljordan$ jinja2
+Usage: jinja2 [options] <input template> <input data>
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  --format=FORMAT       format of input variables: auto, ini, json,
+                        querystring, yaml, yml
+  -e EXTENSIONS, --extension=EXTENSIONS
+                        extra jinja2 extensions to load
+  -D key=value          Define template variable in the form of key=value
+  -s SECTION, --section=SECTION
+                        Use only this section from the configuration
+  --strict              Disallow undefined variables to be used within the
+                        template
+Karis-MacBook-Pro:~ kariljordan$ pip install svglib
+Collecting svglib
+  Downloading svglib-0.8.1.tar.gz (532kB)
+    100% |████████████████████████████████| 542kB 1.1MB/s 
+Collecting reportlab (from svglib)
+  Downloading reportlab-3.4.0.tar.gz (2.0MB)
+    100% |████████████████████████████████| 2.0MB 452kB/s 
+Requirement already satisfied: lxml in /Applications/anaconda3/lib/python3.6/site-packages (from svglib)
+Requirement already satisfied: pillow>=2.4.0 in /Applications/anaconda3/lib/python3.6/site-packages (from reportlab->svglib)
+Requirement already satisfied: pip>=1.4.1 in /Applications/anaconda3/lib/python3.6/site-packages (from reportlab->svglib)
+Requirement already satisfied: setuptools>=2.2 in /Applications/anaconda3/lib/python3.6/site-packages (from reportlab->svglib)
+Requirement already satisfied: olefile in /Applications/anaconda3/lib/python3.6/site-packages (from pillow>=2.4.0->reportlab->svglib)
+Building wheels for collected packages: svglib, reportlab
+  Running setup.py bdist_wheel for svglib ... done
+  Stored in directory: /Users/kariljordan/Library/Caches/pip/wheels/a2/81/6e/85a2786580c1b61d93471e6ef140b71989f2fdead4e98a19fd
+  Running setup.py bdist_wheel for reportlab ... done
+  Stored in directory: /Users/kariljordan/Library/Caches/pip/wheels/16/72/7c/13eee286abea1eb3c51cb47a8974c40a612b5acdfd58e45820
+Successfully built svglib reportlab
+Installing collected packages: reportlab, svglib
+Successfully installed reportlab-3.4.0 svglib-0.8.1
+Karis-MacBook-Pro:~ kariljordan$ svg2pdf
+usage: svg2pdf [-h] [-v] [-o PATH_PAT] [PATH [PATH ...]]
+Karis-MacBook-Pro:~ kariljordan$ ls
+Applications	Desktop		Downloads	Library		Music		Public
+Data_Carpentry	Documents	Google Drive	Movies		Pictures
+Karis-MacBook-Pro:~ kariljordan$ cd Data_Carpentry/my-forked-repos/
+Karis-MacBook-Pro:my-forked-repos kariljordan$ git clone https://github.com/swcarpentry/certification.git
+Cloning into 'certification'...
+remote: Counting objects: 2858, done.
+remote: Compressing objects: 100% (30/30), done.
+remote: Total 2858 (delta 51), reused 58 (delta 40), pack-reused 2788
+Receiving objects: 100% (2858/2858), 80.89 MiB | 9.22 MiB/s, done.
+Resolving deltas: 100% (1820/1820), done.
+Karis-MacBook-Pro:my-forked-repos kariljordan$ ls
+ASEE			certification		learn-programming	private-data
+assessment		equity-and-inclusion	mentoring
+Karis-MacBook-Pro:my-forked-repos kariljordan$ cd certification/
+Karis-MacBook-Pro:certification kariljordan$ jinja2 mentorship.svg -D name="Some Name" -D date="January 10, 2018" -D year="2018" > name_some.svg
+Karis-MacBook-Pro:certification kariljordan$ svg2pdf name_some.svg 
+Karis-MacBook-Pro:certification kariljordan$ ls
+README.md		community-service	core.svg		instructor_long.svg	name_some.pdf		swc-instructor
+attendance		community-service.svg	core_attended.svg	maintainer		name_some.svg		swc-instructor.svg
+attendance.svg		completion.svg		dc-instructor		maintainer.svg		organizer		trainer
+bin			core			dc-instructor.svg	mentorship.svg		organizer.svg		trainer.svg
+Karis-MacBook-Pro:certification kariljordan$ open name_some.pdf 
+Karis-MacBook-Pro:certification kariljordan$ 
