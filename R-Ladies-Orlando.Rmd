@@ -1,0 +1,75 @@
+---
+title: "R-Ladies-Orlando"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE,
+               message = FALSE,
+               warning = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(purrr)
+library(tibble)
+library(DBI)
+library(mapproj)
+library(RColorBrewer)
+library(srvyr)
+library(beeswarm)
+library(NPS)
+```
+
+
+```{r}
+students <- readr::read_csv("https://raw.githubusercontent.com/kariljordan/meetup-presentations_orlando/master/SampleStudents.csv")
+```
+
+
+```{r}
+# Replace column names that have spaces using make.names
+# Pull the p values
+students.2 <- students
+colnames(students.2) <- make.names(colnames(students.2))
+# colnames(students.2)
+for (j in 1:ncol(students)) anova(lm(Years.to.Graduation ~., data =
+                                            students.2[,c(4,j)]))$p.value
+```
+
+```{r}
+# Pull out just the p-values
+v.p.value <- rep(NA, ncol(students.2))
+names(v.p.value) <- colnames(students.2)
+for(j in 1:ncol(students.2)){
+  v.p.value[j] <- anova(
+    lm(Years.to.Graduation ~ .,data = students.2[,c(4,j)])
+  )[["Pr(>F)"]][1] #Prob. of a random variable of F distribution greater than the observed ratio
+}
+  sort(v.p.value,decreasing = TRUE)
+```
+At initial glance, the valuable variables are Change.College, Change.Major, LabGPA, College, MthGPA, PROFILE_HIGH_SCHOOL_PERCENTILE
+
+```{r selecting top 7 variables}
+students.3 <- students.2 %>%
+  select(ID, NewEthnicity, Years.to.Graduation, Change.College, Change.Major, LabGPA, College, MthGPA, PROFILE_HIGH_SCHOOL_PERCENTILE)
+```
+
+```{r}
+# Ethnicity vs. Years to Graduate
+ggplot(students.3) +
+  geom_boxplot(aes(NewEthnicity, Years.to.Graduation))
+
+# Whether they changed college vs. Years to Graduate
+ggplot(students.3) +
+  geom_boxplot(aes(Change.College, Years.to.Graduation))
+# For those who changed college at least 50% took 5 years to graduate.
+
+# High school percentile vs. years to graduate
+# jitter is used to see the size aspect to your data
+ggplot(students.3) +
+  geom_jitter(aes(PROFILE_HIGH_SCHOOL_PERCENTILE, Years.to.Graduation,
+                  color=NewEthnicity))
+```
